@@ -1,0 +1,16 @@
+Database tables/relations:
+
+
+Students (with fields: s_id, name, department, year)
+Courses (with fields: c_id, f_id, name, credits)
+Enrollments (with fields: s_id, c_id, date, state)
+Faculty (with fields: f_id, name, department)
+
+
+Some queries or operations below the schema, including:
+
+
+Counting students enrolled in a course A
+Looking up enrollments for a course B
+Finding CS faculty members
+Finding students under CS faculty members (where faculty and student departments match)
