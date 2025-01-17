@@ -1,18 +1,60 @@
 import express from 'express';
-import cors from 'cors'; 
-import { mysqlConnection, pgClient } from './db.js';
+
+import pkg from 'pg'; // Import the default CommonJS export
+const { Client } = pkg; // Destructure the Client object from the package
+
+
+import cors from 'cors';
+import mysql from 'mysql2';
+import { configDotenv } from 'dotenv';
 
 const app = express();
 app.use(cors());
-app.use(express.json()); // To parse JSON bodies
+app.use(express.json());
 
-app.get('/courses',(req,res)=>{
-  mysqlConnection.query('SELECT * FROM courses',
-    (err, results) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json(results);
+// MySQL Connection
+const mysqlConnection = mysql.createConnection({
+  host: process.env.MYSQL_HOST || 'localhost',
+  user: process.env.MYSQL_USER || 'root',
+  password: process.env.MYSQL_PASSWORD || 'smogg',
+  database: process.env.MYSQL_DATABASE || 'studentms451',
+});
+
+mysqlConnection.connect(err => {
+  if (err) {
+    console.error('Error connecting to MySQL:', err.message);
+    process.exit(1);
+  } else {
+    console.log('Connected to MySQL');
+  }
+});
+
+// PostgreSQL Connection
+const pgClient = new Client({
+  host: process.env.PG_HOST || 'localhost',
+  user: process.env.PG_USER || 'postgres',
+  password: process.env.PG_PASSWORD || 'password',
+  database: process.env.PG_DATABASE || 'studentms451',
+});
+
+pgClient.connect(err => {
+  if (err) {
+    console.error('Error connecting to PostgreSQL:', err.message);
+    process.exit(1);
+  } else {
+    console.log('Connected to PostgreSQL');
+  }
+});
+
+// MySQL: Get all courses
+app.get('/courses', (req, res) => {
+  mysqlConnection.query('SELECT * FROM courses', (err, results) => {
+    if (err) {
+      console.error('Error fetching courses:', err.message);
+      return res.status(500).json({ error: 'Failed to fetch courses' });
     }
-  );
+    res.json(results);
+  });
 });
 
 // MySQL: Get list of courses for a student
@@ -22,13 +64,13 @@ app.get('/courses/:student_id', (req, res) => {
   const query = `
     SELECT c.course_id, c.course_name, c.course_credits, c.department
     FROM enrollments e
-    INNER JOIN Courses c ON e.course_id = c.course_id
+    INNER JOIN courses c ON e.course_id = c.course_id
     WHERE e.student_id = ?
   `;
 
   mysqlConnection.query(query, [studentId], (err, results) => {
     if (err) {
-      console.error('Error fetching courses:', err.message);
+      console.error('Error fetching courses for student:', err.message);
       return res.status(500).json({ error: 'Failed to fetch courses' });
     }
     res.json(results);
@@ -45,7 +87,7 @@ app.post('/enroll', (req, res) => {
   }
 
   const query = `
-    INSERT INTO Enrollments (student_id, course_id, enrollment_date)
+    INSERT INTO enrollments (student_id, course_id, enrollment_date)
     VALUES (?, ?, NOW())
   `;
 
@@ -58,24 +100,18 @@ app.post('/enroll', (req, res) => {
   });
 });
 
-
 // PostgreSQL: Get student details
 app.get('/student/:student_id', async (req, res) => {
   const studentId = req.params.student_id;
+
   try {
-    await pgClient.connect();
-    const result = await pgClient.query(
-      `SELECT * FROM Students WHERE student_id = ${studentId}`
-    );
+    const result = await pgClient.query('SELECT * FROM students WHERE student_id = $1', [studentId]);
     res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  } finally {
-    await pgClient.end();
+  } catch (err) {
+    console.error('Error fetching student details:', err.message);
+    res.status(500).json({ error: 'Failed to fetch student details' });
   }
 });
-
-
 
 // Start server
 const PORT = 5000;
