@@ -1,0 +1,52 @@
+Students (s_id, name, department, year)
+Courses (c_id, f_id, name, credits)
+Enrollments (s_id, c_id, date, state)
+Faculty (f_id, name, department)
+
+applications
+
+no. of stuents enrolled for a course A:
+SELECT COUNT(s_id) 
+FROM Enrollments 
+WHERE c_id = (SELECT c_id FROM Courses WHERE name = 'A');
+
+∑(E.c_id = A.c_id) = ∑(C.name = 'A')
+--------------------------------------
+
+enrollments(student, date, course) for a course:
+SELECT E.s_id, E.date, C.name 
+FROM Enrollments E 
+JOIN Courses C ON E.c_id = C.c_id 
+WHERE C.name = 'A';
+
+E = (∑(C.name = 'A') ∩ (∑(E.c_id = C.c_id) ∩ (∑(E.s_id, E.date))))
+---------------------------------------
+
+all cs faculty members:
+SELECT * 
+FROM Faculty 
+WHERE department = 'CS';
+
+E = (∑(C.name = 'A') ∩ (∑(E.c_id = C.c_id) ∩ (∑(E.s_id, E.date))))
+----------------------------------------
+
+students under cs Faculty member:
+SELECT S.s_id, S.name 
+FROM Students S 
+JOIN Enrollments E ON S.s_id = E.s_id 
+JOIN Faculty F ON E.c_id = F.f_id 
+WHERE F.department = 'CS';
+
+E = (∑(C.name = 'A') ∩ (∑(E.c_id = C.c_id) ∩ (∑(E.s_id, E.date))))
+----------------------------------------
+
+The symbols used are:
+
+∑ (sigma) represents the union of sets
+∩ represents the intersection of sets
+= represents equality between sets
+A represents the set of courses with name 'A'
+C represents the set of courses
+E represents the set of enrollments
+F represents the set of faculty members
+S represents the set of students

@@ -1,16 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomePage from '@/components/HomePage.vue';
+
 import StudentEnrollment from '@/components/StudentEnrollment.vue';
-import Reports from '@/components/Reports.vue';
+import Reports from '@/components/Faculty.vue';
 import CourseDetails from '@/components/CourseDetails.vue';
-import StudentProfile from '@/components/StudentProfile.vue';
+import StudentProfile from '@/components/Students.vue';
 
 const routes = [
-  {
-    path: '/',
-    component: HomePage,
-    name: 'Home'
-  },
+
   {
     path: '/enrol',
     component: StudentEnrollment,

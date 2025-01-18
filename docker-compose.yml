@@ -3,38 +3,53 @@ services:
     image: mysql:latest
     container_name: mysql-container
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: studentMS
+      #MYSQL_ROOT_PASSWORD: "MyNewPass"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     ports:
-      - "3386:3386"
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql # Persistent data storage
+      # - /c/Users/Lenovo/Desktop/UONschool/4th year/csc 451 distributed databases/project/initialisation/mysql_init:/docker-entrypoint-initdb.d # Initialization scripts
+      - ./initialisation/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
-      - student-network
+      - db_network
+    restart: always
 
   postgres:
     image: postgres:latest
     container_name: postgres-container
     environment:
-      POSTGRES_DB: studentms451
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: studentMS
     ports:
-      - "5433:5433"
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persistent data storage
+      #- /c/Users/Lenovo/Desktop/UONschool/4th year/csc 451 distributed databases/project/initialisation/postgres_init:/docker-entrypoint-initdb.d # Initialization scripts
+      - ./initialisation/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
-      - student-network
+      - db_network
+    restart: always
 
-  mongo:
-    image: mongo:latest
-    container_name: mongo-container
+  sqlite:
+    image: nouchka/sqlite3
+    container_name: sqlite-container
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootpassword
-    ports:
-      - "27017:27017"
+      SQLITE_DB: /data/studentMS.sqlite3
+    volumes:
+      - sqlite_data:/data
+      - /c/Users/Lenovo/Desktop/UONschool/4th year/csc 451 distributed databases/project/sqlite-init/studentMS.sqlite3:/data/studentMS.sqlite3
     networks:
-      - student-network
+      - db_network
+    restart: always
+
+volumes:
+  mysql_data:
+  postgres_data:
+  sqlite_data:
 
 networks:
-  student-network:
+  db_network:
     driver: bridge
-
-
-

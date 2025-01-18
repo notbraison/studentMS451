@@ -173,3 +173,12 @@ dist
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# Ignore MySQL socket and other runtime-generated files
+volumes/mysql/mysql.sock
+volumes/mysql/*.sock
+
+# Ignore other unnecessary files
+volumes/mysql/binlog.index
+volumes/mysql/auto.cnf
+volumes/mysql/ib_buffer_pool

@@ -1,11 +1,11 @@
 <script>
-import HomePage from './components/HomePage.vue';
+import StudentEnrollment from './components/StudentEnrollment.vue';
 import NavBar from './components/NavBar.vue';
 export default{
     
     components:{
      NavBar,
-     HomePage
+    StudentEnrollment
     },}
 
 </script>
@@ -20,7 +20,7 @@ export default{
    
   </main>
 
-  <HomePage />
+  <!-- <StudentEnrollment /> -->
 </template>
 
 <style scoped>

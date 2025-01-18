@@ -3,19 +3,16 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <router-link to="/" class="nav-link active">home</router-link>
+              <router-link to="/enrol" class="nav-link active"> Enrollment</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/enrol" class="nav-link active">Student Enrollment</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/profile" class="nav-link active">Student Profile Viewer</router-link>
+              <router-link to="/profile" class="nav-link active">Student</router-link>
             </li>
             <li class="nav-item" >
               <router-link to="/coursedetails" class="nav-link active">Course Details</router-link>
             </li>
             <li class="nav-item" >
-              <router-link to="/reports" class="nav-link active">Reports</router-link>
+              <router-link to="/reports" class="nav-link active">Faculty</router-link>
             </li>
         </ul>
         </div>

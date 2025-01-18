@@ -6,7 +6,7 @@ const { Client } = pkg; // Destructure the Client object from the package
 
 import cors from 'cors';
 import mysql from 'mysql2';
-import { configDotenv } from 'dotenv';
+import 'dotenv/config'
 
 const app = express();
 app.use(cors());
@@ -33,7 +33,7 @@ mysqlConnection.connect(err => {
 const pgClient = new Client({
   host: process.env.PG_HOST || 'localhost',
   user: process.env.PG_USER || 'postgres',
-  password: process.env.PG_PASSWORD || 'password',
+  password: process.env.PG_PASSWORD || 'pass',
   database: process.env.PG_DATABASE || 'studentms451',
 });
 
@@ -46,7 +46,19 @@ pgClient.connect(err => {
   }
 });
 
+
 // MySQL: Get all courses
+app.get('/courses', (req, res) => {
+  mysqlConnection.query('SELECT * FROM courses', (err, results) => {
+    if (err) {
+      console.error('Error fetching courses:', err.message);
+      return res.status(500).json({ error: 'Failed to fetch courses' });
+    }
+    res.json(results);
+  });
+});
+
+// MySQL: Get all students
 app.get('/courses', (req, res) => {
   mysqlConnection.query('SELECT * FROM courses', (err, results) => {
     if (err) {
@@ -112,6 +124,13 @@ app.get('/student/:student_id', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch student details' });
   }
 });
+
+//Counting students enrolled in a course A
+//we start course  count students
+app.get('',async(req,res)=>{
+const courseId = req.params.course_id;
+
+})
 
 // Start server
 const PORT = 5000;

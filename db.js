@@ -26,7 +26,6 @@ const pgPool = new Pool({
 
 
 
-
 // Check Database Connections
 const checkConnections = async () => {
   try {
