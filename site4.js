@@ -1,8 +1,8 @@
 import express from 'express';
 
 // PostgreSQL connection pool
-import pkg from 'pg';
-const { Pool } = pkg;
+import pg from 'pg';
+const { Pool } = pg;
 
 import dotenv from 'dotenv';  // Load environment variables
 
@@ -13,13 +13,23 @@ const PORT = 3004;
 
 // PostgreSQL Connection Pool
 const pgPool = new Pool({
-  host: process.env.PG_HOST || 'localhost',
-  user: process.env.PG_USER || 'postgres',
-  password: process.env.PG_PASSWORD || 'pass',
-  database: process.env.PG_DATABASE || 'studentMS',
+  host: 'localhost' /* 'postgres*/,
+  user: 'postgres',
+  password:'pass',
+  database: 'studentMS',
+  port: 5432, 
   max: 20,  // Maximum number of connections
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
+});
+
+pgPool.connect()
+.then(client => {
+  console.log('Connected to PostgreSQL');
+  client.release();
+})
+.catch(err => {
+  console.error('Error connecting to PostgreSQL:', err);
 });
 
 // Route to get junior non-CS students (year ≤ 2)
