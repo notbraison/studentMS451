@@ -31,19 +31,6 @@ const pgPool = new Pool({
   connectionTimeoutMillis: 2000,
 });
 
-// SQLite Connection (Optional Setup)
-/* import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
-
-const initSQLite = async () => {
-  const db = await open({
-    filename: process.env.SQLITE_DB || './data/studentMS.sqlite3',
-    driver: sqlite3.Database,
-  });
-  console.log('Connected to SQLite database');
-  return db;
-}; */
-
 // Health Check Endpoint
 app.get('/health', async (req, res) => {
   try {

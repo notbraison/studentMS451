@@ -10,7 +10,6 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql # Persistent data storage
-      # - /c/Users/Lenovo/Desktop/UONschool/4th year/csc 451 distributed databases/project/initialisation/mysql_init:/docker-entrypoint-initdb.d # Initialization scripts
       - ./initialisation_m/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
       - db_network
@@ -27,7 +26,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data # Persistent data storage
-      #- /c/Users/Lenovo/Desktop/UONschool/4th year/csc 451 distributed databases/project/initialisation/postgres_init:/docker-entrypoint-initdb.d # Initialization scripts
       - ./initialisation_p/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
       - db_network

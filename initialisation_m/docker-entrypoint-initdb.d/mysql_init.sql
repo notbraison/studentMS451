@@ -1,5 +1,7 @@
 USE studentMS;
 
+
+
 CREATE TABLE students (
     s_id INT PRIMARY KEY,
     name VARCHAR(255),
@@ -1064,67 +1066,69 @@ INSERT INTO faculty (f_id, name, department) VALUES
 
 /* Insert into Courses */
 
-INSERT INTO courses (c_id, f_id, name, credits) VALUES
-(1, 1, 'Online Advertising', 2),
-(2, 7, 'Euthanasia', 4),
-(3, 18, 'uClinux', 2),
-(4, 6, 'Lean Manufacturing', 1),
-(5, 8, 'Yamaha PM5D', 5),
-(6, 4, 'Two-way Radio', 1),
-(7, 20, 'Interactive TV', 3),
-(8, 8, 'Music', 2),
-(9, 20, 'VCI', 3),
-(10, 4, 'Oil Changes', 3),
-(11, 3, 'Wildlife', 1),
-(12, 16, 'Ember.js', 3),
-(13, 7, 'VMware', 1),
-(14, 10, 'SAP HR', 3),
-(15, 7, 'DVB-T', 2),
-(16, 2, 'NSPS', 4),
-(17, 11, 'IMS DB/DC', 5),
-(18, 4, 'Global Marketing', 4),
-(19, 2, 'Twitter', 2),
-(20, 19, 'Contemporary Art', 3),
-(21, 12, 'Pipefitting', 5),
-(22, 2, 'Construction', 1),
-(23, 2, 'Credit Risk', 3),
-(24, 1, 'Scientific Writing', 3),
-(25, 14, 'Dbx', 2),
-(26, 6, 'XFS', 1),
-(27, 6, 'QA Engineering', 3),
-(28, 13, 'SNOMED', 1),
-(29, 15, 'AOI', 1),
-(30, 10, 'PCRF', 4),
-(31, 10, 'BDC programming', 2),
-(32, 7, 'Axure RP', 3),
-(33, 8, 'NTP', 1),
-(34, 2, 'Hyperion Reports', 3),
-(35, 16, 'ICT Consultancy', 3),
-(36, 7, 'Certified DDI Facilitator', 1),
-(37, 3, 'MDF', 4),
-(38, 1, 'Ambulatory Care', 5),
-(39, 2, 'EBPP', 3),
-(40, 5, 'Land Development', 2),
-(41, 4, 'EP', 2),
-(42, 1, 'CBM', 1),
-(43, 4, 'Squid', 1),
-(44, 17, 'Duty Drawback', 2),
-(45, 1, 'Waterfront', 1),
-(46, 19, 'Strategic Alliances', 4),
-(47, 6, 'AHLTA', 3),
-(48, 20, 'General Insurance', 4),
-(49, 17, 'RP', 5),
-(50, 8, 'DDNS', 1),
-(51, 11, 'Minority Owned', 1),
-(52, 8, 'EBSCO', 5),
-(53, 10, 'Job Analysis', 4),
-(54, 2, 'PFGE', 2),
-(55, 20, 'HR Software', 4),
-(56, 5, 'PDCA', 1),
-(57, 3, 'MMS', 5),
-(58, 12, 'Screening Resumes', 3),
-(59, 5, 'Rig', 2),
-(60, 6, 'FCC License', 5);
+/* Insert into Courses with Department */
+INSERT INTO courses (c_id, f_id, name, credits, department) VALUES
+(1, 1, 'Online Advertising', 2, 'Biology'),
+(2, 7, 'Euthanasia', 4, 'Biology'),
+(3, 18, 'uClinux', 2, 'Maths'),
+(4, 6, 'Lean Manufacturing', 1, 'CS'),
+(5, 8, 'Yamaha PM5D', 5, 'CS'),
+(6, 4, 'Two-way Radio', 1, 'Biology'),
+(7, 20, 'Interactive TV', 3, 'Biology'),
+(8, 8, 'Music', 2, 'CS'),
+(9, 20, 'VCI', 3, 'Biology'),
+(10, 4, 'Oil Changes', 3, 'Biology'),
+(11, 3, 'Wildlife', 1, 'Art'),
+(12, 16, 'Ember.js', 3, 'Art'),
+(13, 7, 'VMware', 1, 'Biology'),
+(14, 10, 'SAP HR', 3, 'CS'),
+(15, 7, 'DVB-T', 2, 'Biology'),
+(16, 2, 'NSPS', 4, 'Biology'),
+(17, 11, 'IMS DB/DC', 5, 'CS'),
+(18, 4, 'Global Marketing', 4, 'Biology'),
+(19, 2, 'Twitter', 2, 'Biology'),
+(20, 19, 'Contemporary Art', 3, 'CS'),
+(21, 12, 'Pipefitting', 5, 'Maths'),
+(22, 2, 'Construction', 1, 'Biology'),
+(23, 2, 'Credit Risk', 3, 'Biology'),
+(24, 1, 'Scientific Writing', 3, 'Biology'),
+(25, 14, 'Dbx', 2, 'Maths'),
+(26, 6, 'XFS', 1, 'CS'),
+(27, 6, 'QA Engineering', 3, 'CS'),
+(28, 13, 'SNOMED', 1, 'Art'),
+(29, 15, 'AOI', 1, 'CS'),
+(30, 10, 'PCRF', 4, 'CS'),
+(31, 10, 'BDC programming', 2, 'CS'),
+(32, 7, 'Axure RP', 3, 'Biology'),
+(33, 8, 'NTP', 1, 'CS'),
+(34, 2, 'Hyperion Reports', 3, 'Biology'),
+(35, 16, 'ICT Consultancy', 3, 'Art'),
+(36, 7, 'Certified DDI Facilitator', 1, 'Biology'),
+(37, 3, 'MDF', 4, 'Art'),
+(38, 1, 'Ambulatory Care', 5, 'Biology'),
+(39, 2, 'EBPP', 3, 'Biology'),
+(40, 5, 'Land Development', 2, 'Biology'),
+(41, 4, 'EP', 2, 'Biology'),
+(42, 1, 'CBM', 1, 'Biology'),
+(43, 4, 'Squid', 1, 'Biology'),
+(44, 17, 'Duty Drawback', 2, 'CS'),
+(45, 1, 'Waterfront', 1, 'Biology'),
+(46, 19, 'Strategic Alliances', 4, 'CS'),
+(47, 6, 'AHLTA', 3, 'CS'),
+(48, 20, 'General Insurance', 4, 'Biology'),
+(49, 17, 'RP', 5, 'CS'),
+(50, 8, 'DDNS', 1, 'CS'),
+(51, 11, 'Minority Owned', 1, 'CS'),
+(52, 8, 'EBSCO', 5, 'CS'),
+(53, 10, 'Job Analysis', 4, 'CS'),
+(54, 2, 'PFGE', 2, 'Biology'),
+(55, 20, 'HR Software', 4, 'Biology'),
+(56, 5, 'PDCA', 1, 'Biology'),
+(57, 3, 'MMS', 5, 'Art'),
+(58, 12, 'Screening Resumes', 3, 'Maths'),
+(59, 5, 'Rig', 2, 'Biology'),
+(60, 6, 'FCC License', 5, 'CS');
+
 
 
 
@@ -2129,4 +2133,53 @@ INSERT INTO enrollments (e_id, s_id, c_id, date, status) VALUES
 (998,784,25,'2024-08-24','NOT DONE'),
 (999,645,57,'2020-01-11','DONE'),
 (1000,568,22,'2016-12-07','NOT DONE');
+
+
+-- Create senior_students table manually
+CREATE TABLE senior_students (
+    s_id INT PRIMARY KEY,
+    name VARCHAR(255),
+    department VARCHAR(255),
+    year INT
+);
+
+-- Populate with data
+INSERT INTO senior_students (s_id, name, department, year)
+SELECT s_id, name, department, year FROM students WHERE year > 2;
+
+
+-- Create table for non-CS students with completed courses (status = 'DONE')
+CREATE TABLE completed_enrollments (
+    e_id INT PRIMARY KEY,
+    s_id INT,
+    c_id INT,
+    date DATE,
+    status TEXT,
+    FOREIGN KEY (s_id) REFERENCES students(s_id),
+    FOREIGN KEY (c_id) REFERENCES courses(c_id)
+);
+
+-- Populate with data
+INSERT INTO completed_enrollments (e_id, s_id, c_id, date, status)
+SELECT e_id, s_id, c_id, date, status 
+FROM enrollments 
+WHERE s_id IN (SELECT s_id FROM students WHERE department != 'CS') 
+AND status = 'DONE';
+
+
+-- Create table for non-CS advanced courses (credits > 2)
+CREATE TABLE advanced_courses (
+    c_id INT PRIMARY KEY,
+    f_id INT,
+    name VARCHAR(255),
+    credits INT,
+    department VARCHAR(255),
+    FOREIGN KEY (f_id) REFERENCES faculty(f_id)
+);
+-- Populate with da
+INSERT INTO advanced_courses (c_id, f_id, name, credits, department)
+SELECT c_id, f_id, name, credits, department 
+FROM courses 
+WHERE department != 'CS' AND credits > 2;
+
 
