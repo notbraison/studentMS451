@@ -9,7 +9,7 @@ import dotenv from 'dotenv';  // Load environment variables
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3004;
+const PORT = 3004;
 
 // PostgreSQL Connection Pool
 const pgPool = new Pool({

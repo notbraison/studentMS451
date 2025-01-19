@@ -5,14 +5,14 @@ import dotenv from 'dotenv';  // Load environment variables
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3003;
+const PORT = 3003;
 
 // MySQL Connection Pool
 const mysqlPool = mysql.createPool({
   host: process.env.MYSQL_HOST || 'localhost',
   user: process.env.MYSQL_USER || 'root',
   password: process.env.MYSQL_PASSWORD || '',
-  database: process.env.MYSQL_DATABASE || 'studentMS',
+  database: 'studentMS',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
