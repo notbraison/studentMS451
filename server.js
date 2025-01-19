@@ -1,139 +1,118 @@
 import express from 'express';
+import mysql from 'mysql2/promise'; // Promise-based MySQL client
+import pg from 'pkg';
+import { Pool } from 'pg'; // PostgreSQL connection pool
+import dotenv from 'dotenv'; // Environment variable loader
 
-import pkg from 'pg'; // Import the default CommonJS export
-const { Client } = pkg; // Destructure the Client object from the package
-
-
-import cors from 'cors';
-import mysql from 'mysql2';
-import 'dotenv/config'
+dotenv.config();
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+const PORT = 5000;
 
-// MySQL Connection
-const mysqlConnection = mysql.createConnection({
+// MySQL Connection Pool
+const mysqlPool = mysql.createPool({
   host: process.env.MYSQL_HOST || 'localhost',
   user: process.env.MYSQL_USER || 'root',
-  password: process.env.MYSQL_PASSWORD || 'smogg',
-  database: process.env.MYSQL_DATABASE || 'studentms451',
+  password: process.env.MYSQL_PASSWORD || '',
+  database: process.env.MYSQL_DATABASE || 'studentMS',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
-mysqlConnection.connect(err => {
-  if (err) {
-    console.error('Error connecting to MySQL:', err.message);
-    process.exit(1);
-  } else {
-    console.log('Connected to MySQL');
-  }
-});
-
-// PostgreSQL Connection
-const pgClient = new Client({
+// PostgreSQL Connection Pool
+const pgPool = new Pool({
   host: process.env.PG_HOST || 'localhost',
   user: process.env.PG_USER || 'postgres',
   password: process.env.PG_PASSWORD || 'pass',
-  database: process.env.PG_DATABASE || 'studentms451',
+  database: process.env.PG_DATABASE || 'studentMS',
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 });
 
-pgClient.connect(err => {
-  if (err) {
-    console.error('Error connecting to PostgreSQL:', err.message);
-    process.exit(1);
-  } else {
-    console.log('Connected to PostgreSQL');
-  }
-});
+// SQLite Connection (Optional Setup)
+/* import sqlite3 from 'sqlite3';
+import { open } from 'sqlite';
 
-
-// MySQL: Get all courses
-app.get('/courses', (req, res) => {
-  mysqlConnection.query('SELECT * FROM courses', (err, results) => {
-    if (err) {
-      console.error('Error fetching courses:', err.message);
-      return res.status(500).json({ error: 'Failed to fetch courses' });
-    }
-    res.json(results);
+const initSQLite = async () => {
+  const db = await open({
+    filename: process.env.SQLITE_DB || './data/studentMS.sqlite3',
+    driver: sqlite3.Database,
   });
-});
+  console.log('Connected to SQLite database');
+  return db;
+}; */
 
-// MySQL: Get all students
-app.get('/courses', (req, res) => {
-  mysqlConnection.query('SELECT * FROM courses', (err, results) => {
-    if (err) {
-      console.error('Error fetching courses:', err.message);
-      return res.status(500).json({ error: 'Failed to fetch courses' });
-    }
-    res.json(results);
-  });
-});
-
-// MySQL: Get list of courses for a student
-app.get('/courses/:student_id', (req, res) => {
-  const studentId = req.params.student_id;
-
-  const query = `
-    SELECT c.course_id, c.course_name, c.course_credits, c.department
-    FROM enrollments e
-    INNER JOIN courses c ON e.course_id = c.course_id
-    WHERE e.student_id = ?
-  `;
-
-  mysqlConnection.query(query, [studentId], (err, results) => {
-    if (err) {
-      console.error('Error fetching courses for student:', err.message);
-      return res.status(500).json({ error: 'Failed to fetch courses' });
-    }
-    res.json(results);
-  });
-});
-
-// MySQL: Enroll a student in a new course
-app.post('/enroll', (req, res) => {
-  const { student_id, course_id } = req.body;
-
-  // Validate input
-  if (!student_id || !course_id) {
-    return res.status(400).json({ error: 'Student ID and Course ID are required' });
-  }
-
-  const query = `
-    INSERT INTO enrollments (student_id, course_id, enrollment_date)
-    VALUES (?, ?, NOW())
-  `;
-
-  mysqlConnection.query(query, [student_id, course_id], (err, results) => {
-    if (err) {
-      console.error('Error enrolling student:', err.message);
-      return res.status(500).json({ error: 'Failed to enroll student' });
-    }
-    res.json({ message: 'Student enrolled successfully', results });
-  });
-});
-
-// PostgreSQL: Get student details
-app.get('/student/:student_id', async (req, res) => {
-  const studentId = req.params.student_id;
-
+// Health Check Endpoint
+app.get('/health', async (req, res) => {
   try {
-    const result = await pgClient.query('SELECT * FROM students WHERE student_id = $1', [studentId]);
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('Error fetching student details:', err.message);
-    res.status(500).json({ error: 'Failed to fetch student details' });
+    const [mysqlRows] = await mysqlPool.query('SELECT 1');
+    const pgClient = await pgPool.connect();
+    await pgClient.query('SELECT 1');
+    pgClient.release();
+
+    res.json({
+      mysql: 'Connected',
+      postgresql: 'Connected',
+      sqlite: 'Not Tested',
+    });
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    res.status(500).send('Database health check failed');
   }
 });
 
-//Counting students enrolled in a course A
-//we start course  count students
-app.get('',async(req,res)=>{
-const courseId = req.params.course_id;
+// Example Endpoint: Count Students in a Course (MySQL)
+app.get('/students/count/:courseId', async (req, res) => {
+  const courseId = req.params.courseId;
+  try {
+    const [rows] = await mysqlPool.query(
+      'SELECT COUNT(*) as count FROM students WHERE course_id = ?',
+      [courseId]
+    );
+    res.json(rows[0]);
+  } catch (error) {
+    console.error('Error querying MySQL:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
-})
+// Graceful Shutdown
+const shutdown = async () => {
+  console.log('Shutting down gracefully...');
+  await mysqlPool.end();
+  await pgPool.end();
+  console.log('Database pools closed');
+  process.exit(0);
+};
 
-// Start server
-const PORT = 5000;
-app.listen(PORT, () => {
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
+
+// Start Server
+app.listen(PORT, async () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+
+  // Initialize SQLite
+  /* try {
+    const sqliteDB = await initSQLite();
+    sqliteDB.close();
+  } catch (error) {
+    console.error('Error initializing SQLite:', error);
+  } */
+
+  // Verify Connections
+  try {
+    const [mysqlCheck] = await mysqlPool.query('SELECT 1');
+    console.log('MySQL connection verified:', mysqlCheck);
+
+    const pgClient = await pgPool.connect();
+    await pgClient.query('SELECT 1');
+    pgClient.release();
+    console.log('PostgreSQL connection verified');
+  } catch (error) {
+    console.error('Database verification failed:', error);
+    process.exit(1);
+  }
 });
