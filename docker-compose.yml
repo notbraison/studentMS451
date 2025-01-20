@@ -34,11 +34,30 @@ services:
   sqlite:
     image: nouchka/sqlite3
     container_name: sqlite-container
-    environment:
-      SQLITE_DB: /data/studentMS.sqlite3
+    ports:
+      - "3000:3000" # Decision site port
+      - "3001:3001"
+      - "3002:3002"
+    command: ["sqlite3"]
+    stdin_open: true
+    tty: true
     volumes:
-      - sqlite_data:/data
-      - /c/Users/Lenovo/Desktop/UONschool/4th year/csc 451 distributed databases/project/sqlite-init/studentMS.sqlite3:/data/studentMS.sqlite3
+      - ./sqlite_service/university.db:/data/university.db
+      - ./sqlite_service/site1.sqlite:/data/site1.sqlite
+      - ./sqlite_service/site2.sqlite:/data/site2.sqlite
+    networks:
+      - db_network
+    restart: always
+
+  bun-service:
+    build:
+      context: ./sqlite_service
+      dockerfile: dockerfile
+    container_name: bun-container
+    ports:
+      - "3000:3000" # Ensure this matches the decision site port
+    volumes:
+      - ./sqlite_service:/app # Mounts the entire folder
     networks:
       - db_network
     restart: always

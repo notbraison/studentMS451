@@ -18,6 +18,13 @@ const mysqlPool = mysql.createPool({
   queueLimit: 0,
 });
 
+if(mysqlPool){
+  console.log("Connected to MySQL");
+}else{
+  console.log("Failed to connect to MySQL");
+}
+
+
 // Route to get non-CS senior students (year > 2)
 app.get('/senior_students', async (req, res) => {
   try {
