@@ -7,7 +7,7 @@ services:
       #MYSQL_ROOT_PASSWORD: "MyNewPass"
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     ports:
-      - "3306:3306"
+      - "3309:3309"
     volumes:
       - mysql_data:/var/lib/mysql # Persistent data storage
       - ./initialisation_m/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -31,41 +31,41 @@ services:
       - db_network
     restart: always
 
-  sqlite:
-    image: nouchka/sqlite3
-    container_name: sqlite-container
-    ports:
-      - "3000:3000" # Decision site port
-      - "3001:3001"
-      - "3002:3002"
-    command: ["sqlite3"]
-    stdin_open: true
-    tty: true
-    volumes:
-      - ./sqlite_service/university.db:/data/university.db
-      - ./sqlite_service/site1.sqlite:/data/site1.sqlite
-      - ./sqlite_service/site2.sqlite:/data/site2.sqlite
-    networks:
-      - db_network
-    restart: always
+  # sqlite:
+  #   image: nouchka/sqlite3
+  #   container_name: sqlite-container
+  #   ports:
+  #     - "3000:3000" # Decision site port
+  #     - "3001:3001"
+  #     - "3002:3002"
+  #   command: ["sqlite3"]
+  #   stdin_open: true
+  #   tty: true
+  #   volumes:
+  #     - ./sqlite_service/university.db:/data/university.db
+  #     - ./sqlite_service/site1.sqlite:/data/site1.sqlite
+  #     - ./sqlite_service/site2.sqlite:/data/site2.sqlite
+  #   networks:
+  #     - db_network
+  #   restart: always
 
-  bun-service:
-    build:
-      context: ./sqlite_service
-      dockerfile: dockerfile
-    container_name: bun-container
-    ports:
-      - "3000:3000" # Ensure this matches the decision site port
-    volumes:
-      - ./sqlite_service:/app # Mounts the entire folder
-    networks:
-      - db_network
-    restart: always
+  # bun-service:
+  #   build:
+  #     context: ./sqlite_service
+  #     dockerfile: dockerfile
+  #   container_name: bun-container
+  #   ports:
+  #     - "3000:3000" # Ensure this matches the decision site port
+  #   volumes:
+  #     - ./sqlite_service:/app # Mounts the entire folder
+  #   networks:
+  #     - db_network
+  #   restart: always
 
 volumes:
   mysql_data:
   postgres_data:
-  sqlite_data:
+  #sqlite_data:
 
 networks:
   db_network:
